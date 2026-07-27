@@ -1,0 +1,178 @@
+{
+  "info": {
+    "name": "HRMS API",
+    "description": "Complete REST API collection for the HRMS MERN application. Set the {{baseUrl}} variable (default http://localhost:5000/api/v1). The Login request auto-saves accessToken & refreshToken to collection variables.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:5000/api/v1" },
+    { "key": "accessToken", "value": "" },
+    { "key": "refreshToken", "value": "" }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register Company",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/auth/register-company",
+            "body": { "mode": "raw", "raw": "{\n  \"companyName\": \"New Corp\",\n  \"adminName\": \"Admin User\",\n  \"email\": \"admin@newcorp.com\",\n  \"password\": \"Secret@123\"\n}" }
+          }
+        },
+        {
+          "name": "Login (saves tokens)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.data) {",
+                  "  pm.collectionVariables.set('accessToken', res.data.accessToken);",
+                  "  pm.collectionVariables.set('refreshToken', res.data.refreshToken);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/auth/login",
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"hr@acme.com\",\n  \"password\": \"Hr@1234\"\n}" }
+          }
+        },
+        { "name": "Me", "request": { "method": "GET", "url": "{{baseUrl}}/auth/me" } },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/auth/refresh",
+            "body": { "mode": "raw", "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}" }
+          }
+        },
+        {
+          "name": "Forgot Password",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/auth/forgot-password",
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"hr@acme.com\"\n}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dashboard",
+      "item": [{ "name": "Get Dashboard", "request": { "method": "GET", "url": "{{baseUrl}}/dashboard" } }]
+    },
+    {
+      "name": "Companies",
+      "item": [
+        { "name": "My Company", "request": { "method": "GET", "url": "{{baseUrl}}/companies/me" } },
+        { "name": "List Companies (Super Admin)", "request": { "method": "GET", "url": "{{baseUrl}}/companies" } }
+      ]
+    },
+    {
+      "name": "Employees",
+      "item": [
+        { "name": "List Employees", "request": { "method": "GET", "url": "{{baseUrl}}/employees?page=1&limit=10" } },
+        {
+          "name": "Create Employee",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/employees",
+            "body": { "mode": "raw", "raw": "{\n  \"firstName\": \"John\",\n  \"lastName\": \"Smith\",\n  \"email\": \"john@acme.com\",\n  \"employmentType\": \"full_time\",\n  \"salary\": { \"basic\": 4000, \"hra\": 1500, \"allowances\": 800 }\n}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Attendance",
+      "item": [
+        { "name": "Check In", "request": { "method": "POST", "url": "{{baseUrl}}/attendance/check-in", "body": { "mode": "raw", "raw": "{}" }, "header": [{ "key": "Content-Type", "value": "application/json" }] } },
+        { "name": "Check Out", "request": { "method": "POST", "url": "{{baseUrl}}/attendance/check-out", "body": { "mode": "raw", "raw": "{}" }, "header": [{ "key": "Content-Type", "value": "application/json" }] } },
+        { "name": "List Attendance", "request": { "method": "GET", "url": "{{baseUrl}}/attendance" } },
+        { "name": "Monthly Summary", "request": { "method": "GET", "url": "{{baseUrl}}/attendance/monthly?month=6&year=2026" } }
+      ]
+    },
+    {
+      "name": "Leaves",
+      "item": [
+        { "name": "List Leaves", "request": { "method": "GET", "url": "{{baseUrl}}/leaves" } },
+        { "name": "Leave Balance", "request": { "method": "GET", "url": "{{baseUrl}}/leaves/balance" } },
+        {
+          "name": "Apply Leave",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/leaves",
+            "body": { "mode": "raw", "raw": "{\n  \"leaveType\": \"<LEAVE_TYPE_ID>\",\n  \"startDate\": \"2026-07-01\",\n  \"endDate\": \"2026-07-02\",\n  \"reason\": \"Personal\"\n}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Payroll",
+      "item": [
+        {
+          "name": "Generate Payroll",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/payroll/generate",
+            "body": { "mode": "raw", "raw": "{\n  \"month\": 6,\n  \"year\": 2026\n}" }
+          }
+        },
+        { "name": "List Payslips", "request": { "method": "GET", "url": "{{baseUrl}}/payroll/payslips" } }
+      ]
+    },
+    {
+      "name": "Master Data",
+      "item": [
+        { "name": "List Departments", "request": { "method": "GET", "url": "{{baseUrl}}/departments" } },
+        {
+          "name": "Create Department",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/departments",
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Marketing\",\n  \"description\": \"Brand & growth\"\n}" }
+          }
+        },
+        { "name": "List Leave Types", "request": { "method": "GET", "url": "{{baseUrl}}/leave-types" } }
+      ]
+    },
+    {
+      "name": "Announcements",
+      "item": [
+        { "name": "List", "request": { "method": "GET", "url": "{{baseUrl}}/announcements" } },
+        {
+          "name": "Create",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/announcements",
+            "body": { "mode": "raw", "raw": "{\n  \"title\": \"Holiday Notice\",\n  \"body\": \"Office closed Friday.\",\n  \"audience\": \"company\",\n  \"priority\": \"important\"\n}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reports",
+      "item": [
+        { "name": "Employee Report", "request": { "method": "GET", "url": "{{baseUrl}}/reports/employees" } },
+        { "name": "Attendance Report (CSV)", "request": { "method": "GET", "url": "{{baseUrl}}/reports/attendance?format=csv" } }
+      ]
+    }
+  ]
+}

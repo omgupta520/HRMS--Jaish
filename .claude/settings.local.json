@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(sc query *)",
+      "PowerShell($conns = Get-NetTCPConnection -LocalPort 5000 -State Listen -ErrorAction SilentlyContinue; $conns | ForEach-Object { $p = Get-Process -Id $_.OwningProcess; \"$\\($_.LocalAddress\\):$\\($_.LocalPort\\) PID=$\\($p.Id\\) Name=$\\($p.ProcessName\\) Path=$\\($p.Path\\)\" })",
+      "PowerShell(\\(Get-CimInstance Win32_Process -Filter \"ProcessId=23964\"\\).CommandLine)",
+      "PowerShell(Stop-Process -Id 23964 -Force -Confirm:$false; \\(Get-Item \"C:\\\\Users\\\\omgup\\\\OneDrive\\\\Desktop\\\\Projects\\\\HRMS\\\\backend\\\\src\\\\server.js\"\\).LastWriteTime = Get-Date; Start-Sleep -Seconds 4; Get-Content \"C:\\\\Users\\\\omgup\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--Users-omgup-OneDrive-Desktop-Projects-HRMS\\\\14b07bb1-ddcc-4d5e-a647-dd2ab8c033c1\\\\tasks\\\\b8ldam7zi.output\" -Tail 6)",
+      "PowerShell(Invoke-RestMethod http://localhost:5000/api/v1/health -ErrorAction SilentlyContinue)",
+      "PowerShell(Get-Content \"C:\\\\Users\\\\omgup\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--Users-omgup-OneDrive-Desktop-Projects-HRMS\\\\14b07bb1-ddcc-4d5e-a647-dd2ab8c033c1\\\\tasks\\\\b8ldam7zi.output\" -Tail 3; $c = Get-NetTCPConnection -LocalPort 5000 -State Listen; \"Listening PID: $\\($c.OwningProcess | Select-Object -Unique\\)\")",
+      "PowerShell($p = Get-CimInstance Win32_Process -Filter \"ProcessId=18884\"; \"Cmd: $\\($p.CommandLine\\)\"; \"Parent: $\\($p.ParentProcessId\\)\"; $pp = Get-CimInstance Win32_Process -Filter \"ProcessId=$\\($p.ParentProcessId\\)\" -ErrorAction SilentlyContinue; \"ParentCmd: $\\($pp.CommandLine\\)\")",
+      "PowerShell(Invoke-RestMethod http://localhost:5000/api/v1/health)",
+      "PowerShell($mine = Get-CimInstance Win32_Process | Where-Object { $_.CommandLine -match 'nodemon' -and $_.ProcessId -ne 4100 }; $mine | ForEach-Object { \"Stopping PID $\\($_.ProcessId\\): $\\($_.CommandLine\\)\"; Stop-Process -Id $_.ProcessId -Force -Confirm:$false }; Start-Sleep 2; Invoke-RestMethod http://localhost:5000/api/v1/health | ConvertTo-Json -Compress)",
+      "PowerShell($c = Get-NetTCPConnection -LocalPort 5000 -State Listen -ErrorAction SilentlyContinue; if \\($c\\) { $pid5000 = $c.OwningProcess | Select-Object -Unique; \"Port 5000 PID: $pid5000\" } else { \"Nothing listening on 5000\" }; $nm = Get-CimInstance Win32_Process | Where-Object { $_.Name -eq 'node.exe' }; $nm | ForEach-Object { \"node PID $\\($_.ProcessId\\) parent=$\\($_.ParentProcessId\\): $\\($_.CommandLine\\)\" }; try { Invoke-RestMethod http://localhost:5000/api/v1/health -ErrorAction Stop | ConvertTo-Json -Compress } catch { \"Health check FAILED: $\\($_.Exception.Message\\)\" })"
+    ]
+  }
+}
