@@ -41,7 +41,7 @@ export default function Register() {
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div>
           <label className="label">Company name</label>
-          <input className="input" placeholder="Acme Corporation" {...register('companyName')} />
+          <input className="input" placeholder="Jaish Global Tech" {...register('companyName')} />
           {errors.companyName && <p className="mt-1 text-xs text-red-500">{errors.companyName.message}</p>}
         </div>
         <div>
@@ -51,7 +51,7 @@ export default function Register() {
         </div>
         <div>
           <label className="label">Work email</label>
-          <input className="input" placeholder="admin@acme.com" {...register('email')} />
+          <input className="input" placeholder="admin@jaishglobaltech.com" {...register('email')} />
           {errors.email && <p className="mt-1 text-xs text-red-500">{errors.email.message}</p>}
         </div>
         <div className="grid grid-cols-2 gap-3">

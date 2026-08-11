@@ -72,12 +72,12 @@ async function seed() {
 
   // ---- Demo company ----
   const company = await Company.create({
-    name: 'Acme Corporation',
-    code: 'ACME',
-    email: 'contact@acme.com',
-    phone: '+1-555-0100',
-    address: { city: 'San Francisco', state: 'CA', country: 'USA', zip: '94105' },
-    settings: { currency: 'USD' },
+    name: 'Jaish Global Tech',
+    code: 'JGT',
+    email: 'contact@jaishglobaltech.com',
+    phone: '+91-98765-43210',
+    address: { city: 'New Delhi', state: 'Delhi', country: 'India', zip: '110001' },
+    settings: { currency: 'INR' },
   });
 
   // Master data
@@ -95,7 +95,7 @@ async function seed() {
 
   const branch = await Branch.create({
     company: company._id, name: 'Head Office', code: 'HO', isHeadOffice: true,
-    address: { city: 'San Francisco', country: 'USA' },
+    address: { city: 'New Delhi', country: 'India' },
   });
 
   const shift = await Shift.create({
@@ -125,46 +125,46 @@ async function seed() {
     branch: branch._id,
     shift: shift._id,
     leaveBalances,
-    salary: { basic: 5000, hra: 2000, allowances: 1000, pf: 600, esi: 100, tds: 400 },
+    salary: { basic: 50000, hra: 20000, allowances: 10000, pf: 6000, esi: 1000, tds: 4000 },
   };
 
   // ---- HR / Company Admin ----
   const hr = await createPerson({
     company,
-    name: 'Hannah Reese',
-    email: 'hr@acme.com',
+    name: 'Priya Sharma',
+    email: 'hr@jaishglobaltech.com',
     password: 'Hr@1234',
     role: ROLES.HR,
-    employeeId: buildEmployeeId('ACME', 1),
-    extra: { department: hrDept._id, designation: hrManagerDes._id, branch: branch._id, shift: shift._id, leaveBalances, salary: { basic: 6000, hra: 2400, allowances: 1200, pf: 720, tds: 500 } },
+    employeeId: buildEmployeeId('JGT', 1),
+    extra: { department: hrDept._id, designation: hrManagerDes._id, branch: branch._id, shift: shift._id, leaveBalances, salary: { basic: 60000, hra: 24000, allowances: 12000, pf: 7200, tds: 5000 } },
   });
 
   // ---- Manager ----
   const manager = await createPerson({
     company,
-    name: 'Marcus Lee',
-    email: 'manager@acme.com',
+    name: 'Arjun Mehta',
+    email: 'manager@jaishglobaltech.com',
     password: 'Manager@123',
     role: ROLES.MANAGER,
-    employeeId: buildEmployeeId('ACME', 2),
+    employeeId: buildEmployeeId('JGT', 2),
     extra: commonJob,
   });
 
   // ---- Employee (reports to Manager) ----
   const employee = await createPerson({
     company,
-    name: 'Emily Carter',
-    email: 'employee@acme.com',
+    name: 'Riya Kapoor',
+    email: 'employee@jaishglobaltech.com',
     password: 'Employee@123',
     role: ROLES.EMPLOYEE,
-    employeeId: buildEmployeeId('ACME', 3),
-    extra: { ...commonJob, reportingManager: manager.employee._id, phone: '+1-555-0133', dateOfBirth: dayjs().subtract(28, 'year').toDate() },
+    employeeId: buildEmployeeId('JGT', 3),
+    extra: { ...commonJob, reportingManager: manager.employee._id, phone: '+91-98100-33456', dateOfBirth: dayjs().subtract(26, 'year').toDate() },
   });
 
   // Two more employees under the manager for nicer dashboards.
   const extras = await Promise.all([
-    createPerson({ company, name: 'David Kim', email: 'david@acme.com', password: 'Employee@123', role: ROLES.EMPLOYEE, employeeId: buildEmployeeId('ACME', 4), extra: { ...commonJob, department: sales._id, designation: salesExec._id, reportingManager: manager.employee._id } }),
-    createPerson({ company, name: 'Sara Patel', email: 'sara@acme.com', password: 'Employee@123', role: ROLES.EMPLOYEE, employeeId: buildEmployeeId('ACME', 5), extra: { ...commonJob, reportingManager: manager.employee._id } }),
+    createPerson({ company, name: 'Rohit Verma', email: 'rohit@jaishglobaltech.com', password: 'Employee@123', role: ROLES.EMPLOYEE, employeeId: buildEmployeeId('JGT', 4), extra: { ...commonJob, department: sales._id, designation: salesExec._id, reportingManager: manager.employee._id } }),
+    createPerson({ company, name: 'Sneha Gupta', email: 'sneha@jaishglobaltech.com', password: 'Employee@123', role: ROLES.EMPLOYEE, employeeId: buildEmployeeId('JGT', 5), extra: { ...commonJob, reportingManager: manager.employee._id } }),
   ]);
 
   company.employeeSequence = 5;
@@ -218,11 +218,11 @@ async function seed() {
     workingDays: lastMonth.daysInMonth(),
     paidDays: lastMonth.daysInMonth(),
     lopDays: 0,
-    earnings: { basic: 5000, hra: 2000, allowances: 1000, bonus: 0 },
-    deductions: { pf: 600, esi: 100, tds: 400, lop: 0, other: 0 },
-    grossEarnings: 8000,
-    totalDeductions: 1100,
-    netPay: 6900,
+    earnings: { basic: 50000, hra: 20000, allowances: 10000, bonus: 0 },
+    deductions: { pf: 6000, esi: 1000, tds: 4000, lop: 0, other: 0 },
+    grossEarnings: 80000,
+    totalDeductions: 11000,
+    netPay: 69000,
     status: 'paid',
     paidAt: lastMonth.endOf('month').toDate(),
   });
@@ -230,8 +230,8 @@ async function seed() {
   // ---- Welcome announcement ----
   await Announcement.create({
     company: company._id,
-    title: 'Welcome to the HRMS Portal',
-    body: 'Our new HR portal is live! Use it to manage attendance, apply for leave, and download payslips.',
+    title: 'Welcome to Jaish Global Tech HRMS Portal',
+    body: 'Our new HR portal is live! Use it to manage attendance, apply for leave, and download payslips. — HR Team, Jaish Global Tech',
     audience: 'company',
     priority: 'important',
     createdBy: hr.user._id,
@@ -239,9 +239,9 @@ async function seed() {
 
   logger.info('Seed complete. Demo logins:');
   logger.info('  Super Admin : superadmin@hrms.com / Admin@123');
-  logger.info('  HR / Admin  : hr@acme.com / Hr@1234');
-  logger.info('  Manager     : manager@acme.com / Manager@123');
-  logger.info('  Employee    : employee@acme.com / Employee@123');
+  logger.info('  HR / Admin  : hr@jaishglobaltech.com / Hr@1234');
+  logger.info('  Manager     : manager@jaishglobaltech.com / Manager@123');
+  logger.info('  Employee    : employee@jaishglobaltech.com / Employee@123');
 }
 
 (async () => {

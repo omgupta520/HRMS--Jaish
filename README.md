@@ -70,9 +70,9 @@ Open **http://localhost:5173** and use a demo login below.
 | Role | Email | Password |
 | --- | --- | --- |
 | Super Admin | `superadmin@hrms.com` | `Admin@123` |
-| HR / Admin | `hr@acme.com` | `Hr@1234` |
-| Manager | `manager@acme.com` | `Manager@123` |
-| Employee | `employee@acme.com` | `Employee@123` |
+| HR / Admin | `hr@jaishglobaltech.com` | `Hr@1234` |
+| Manager | `manager@jaishglobaltech.com` | `Manager@123` |
+| Employee | `employee@jaishglobaltech.com` | `Employee@123` |
 
 > The login screen also has one-click "Quick demo login" buttons.
 

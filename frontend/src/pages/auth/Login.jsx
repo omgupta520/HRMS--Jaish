@@ -17,9 +17,9 @@ const schema = z.object({
 // Demo accounts created by the seed script.
 const DEMO = [
   { role: 'Super Admin', email: 'superadmin@hrms.com', password: 'Admin@123' },
-  { role: 'HR / Admin', email: 'hr@acme.com', password: 'Hr@1234' },
-  { role: 'Manager', email: 'manager@acme.com', password: 'Manager@123' },
-  { role: 'Employee', email: 'employee@acme.com', password: 'Employee@123' },
+  { role: 'HR / Admin', email: 'hr@jaishglobaltech.com', password: 'Hr@1234' },
+  { role: 'Manager', email: 'manager@jaishglobaltech.com', password: 'Manager@123' },
+  { role: 'Employee', email: 'employee@jaishglobaltech.com', password: 'Employee@123' },
 ];
 
 export default function Login() {
