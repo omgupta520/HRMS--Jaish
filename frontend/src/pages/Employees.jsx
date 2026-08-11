@@ -212,44 +212,54 @@ function EmployeeForm({ employee, onClose, onSaved }) {
     handleSubmit,
     formState: { errors },
   } = useForm({
+    // ALL fields must have explicit defaults so React Hook Form registers
+    // their values even when their tab is never visited by the user.
     defaultValues: editing
       ? {
-          firstName:      employee.firstName,
-          lastName:       employee.lastName,
-          email:          employee.email,
-          phone:          employee.phone,
-          gender:         employee.gender,
-          dateOfBirth:    employee.dateOfBirth ? employee.dateOfBirth.slice(0, 10) : '',
-          address:        employee.address,
-          department:     employee.department?._id,
-          designation:    employee.designation?._id,
-          branch:         employee.branch?._id,
-          shift:          employee.shift?._id,
-          reportingManager: employee.reportingManager?._id || employee.reportingManager,
-          employmentType: employee.employmentType,
-          role:           employee.user?.role || 'employee',
-          joiningDate:    employee.joiningDate ? employee.joiningDate.slice(0, 10) : '',
-          basicSalary:    employee.salary?.basic,
-          hra:            employee.salary?.hra,
-          allowances:     employee.salary?.allowances,
-          bonus:          employee.salary?.bonus,
-          pf:             employee.salary?.pf,
-          esi:            employee.salary?.esi,
-          tds:            employee.salary?.tds,
-          otherDeductions: employee.salary?.otherDeductions,
-          bankAccountName:   employee.bank?.accountName,
-          bankAccountNumber: employee.bank?.accountNumber,
-          bankName:          employee.bank?.bankName,
-          ifsc:              employee.bank?.ifsc,
-          pan:               employee.pan,
-          emergencyName:     employee.emergencyContact?.name,
-          emergencyRelation: employee.emergencyContact?.relation,
-          emergencyPhone:    employee.emergencyContact?.phone,
+          firstName:         employee.firstName        ?? '',
+          lastName:          employee.lastName         ?? '',
+          email:             employee.email            ?? '',
+          phone:             employee.phone            ?? '',
+          gender:            employee.gender           ?? '',
+          dateOfBirth:       employee.dateOfBirth ? employee.dateOfBirth.slice(0, 10) : '',
+          address:           employee.address          ?? '',
+          department:        employee.department?._id  ?? '',
+          designation:       employee.designation?._id ?? '',
+          branch:            employee.branch?._id      ?? '',
+          shift:             employee.shift?._id       ?? '',
+          reportingManager:  employee.reportingManager?._id ?? employee.reportingManager ?? '',
+          employmentType:    employee.employmentType   ?? 'full_time',
+          role:              employee.user?.role       ?? 'employee',
+          joiningDate:       employee.joiningDate ? employee.joiningDate.slice(0, 10) : '',
+          basicSalary:       employee.salary?.basic        ?? 0,
+          hra:               employee.salary?.hra           ?? 0,
+          allowances:        employee.salary?.allowances    ?? 0,
+          bonus:             employee.salary?.bonus         ?? 0,
+          pf:                employee.salary?.pf            ?? 0,
+          esi:               employee.salary?.esi           ?? 0,
+          tds:               employee.salary?.tds           ?? 0,
+          otherDeductions:   employee.salary?.otherDeductions ?? 0,
+          bankAccountName:   employee.bank?.accountName   ?? '',
+          bankAccountNumber: employee.bank?.accountNumber ?? '',
+          bankName:          employee.bank?.bankName      ?? '',
+          ifsc:              employee.bank?.ifsc          ?? '',
+          pan:               employee.pan                 ?? '',
+          emergencyName:     employee.emergencyContact?.name     ?? '',
+          emergencyRelation: employee.emergencyContact?.relation ?? '',
+          emergencyPhone:    employee.emergencyContact?.phone    ?? '',
         }
       : {
-          employmentType: 'full_time',
-          role: 'employee',
+          // Explicit defaults for every field — ensures all values exist
+          // in the form state even if the user never visits that tab.
+          firstName: '', lastName: '', email: '', phone: '',
+          gender: '', dateOfBirth: '', address: '',
+          department: '', designation: '', branch: '', shift: '',
+          reportingManager: '', employmentType: 'full_time', role: 'employee',
           joiningDate: new Date().toISOString().slice(0, 10),
+          basicSalary: 0, hra: 0, allowances: 0, bonus: 0,
+          pf: 0, esi: 0, tds: 0, otherDeductions: 0,
+          bankAccountName: '', bankAccountNumber: '', bankName: '', ifsc: '',
+          pan: '', emergencyName: '', emergencyRelation: '', emergencyPhone: '',
         },
   });
 
@@ -274,45 +284,49 @@ function EmployeeForm({ employee, onClose, onSaved }) {
     }).catch(() => {});
   }, []);
 
+  // Helper — return value or undefined (drops empty strings / falsy so
+  // MongoDB never receives an empty string as an ObjectId reference).
+  const val = (v) => v || undefined;
+
   const onSubmit = async (v) => {
     setSaving(true);
     const payload = {
-      firstName:      v.firstName,
-      lastName:       v.lastName,
-      email:          v.email,
-      phone:          v.phone || undefined,
-      gender:         v.gender || undefined,
-      dateOfBirth:    v.dateOfBirth || undefined,
-      address:        v.address || undefined,
-      department:     v.department || undefined,
-      designation:    v.designation || undefined,
-      branch:         v.branch || undefined,
-      shift:          v.shift || undefined,
-      reportingManager: v.reportingManager || undefined,
-      employmentType: v.employmentType,
-      role:           v.role,
-      joiningDate:    v.joiningDate || undefined,
+      firstName:        v.firstName,
+      lastName:         val(v.lastName),
+      email:            v.email,
+      phone:            val(v.phone),
+      gender:           val(v.gender),
+      dateOfBirth:      val(v.dateOfBirth),
+      address:          val(v.address),
+      department:       val(v.department),      // ObjectId — must not be ''
+      designation:      val(v.designation),     // ObjectId — must not be ''
+      branch:           val(v.branch),          // ObjectId — must not be ''
+      shift:            val(v.shift),           // ObjectId — must not be ''
+      reportingManager: val(v.reportingManager),// ObjectId — must not be ''
+      employmentType:   v.employmentType,
+      role:             v.role,
+      joiningDate:      val(v.joiningDate),
       salary: {
-        basic:           Number(v.basicSalary  || 0),
-        hra:             Number(v.hra           || 0),
-        allowances:      Number(v.allowances    || 0),
-        bonus:           Number(v.bonus         || 0),
-        pf:              Number(v.pf            || 0),
-        esi:             Number(v.esi           || 0),
-        tds:             Number(v.tds           || 0),
+        basic:           Number(v.basicSalary    || 0),
+        hra:             Number(v.hra            || 0),
+        allowances:      Number(v.allowances     || 0),
+        bonus:           Number(v.bonus          || 0),
+        pf:              Number(v.pf             || 0),
+        esi:             Number(v.esi            || 0),
+        tds:             Number(v.tds            || 0),
         otherDeductions: Number(v.otherDeductions || 0),
       },
       bank: {
-        accountName:   v.bankAccountName   || undefined,
-        accountNumber: v.bankAccountNumber || undefined,
-        bankName:      v.bankName          || undefined,
-        ifsc:          v.ifsc              || undefined,
+        accountName:   val(v.bankAccountName),
+        accountNumber: val(v.bankAccountNumber),
+        bankName:      val(v.bankName),
+        ifsc:          val(v.ifsc),
       },
-      pan: v.pan || undefined,
+      pan: val(v.pan),
       emergencyContact: {
-        name:     v.emergencyName     || undefined,
-        relation: v.emergencyRelation || undefined,
-        phone:    v.emergencyPhone    || undefined,
+        name:     val(v.emergencyName),
+        relation: val(v.emergencyRelation),
+        phone:    val(v.emergencyPhone),
       },
     };
 
